@@ -1,20 +1,25 @@
 import hikari, lightbulb, miru
 import os
 from dotenv import load_dotenv
+import csv
 
 load_dotenv()
 
 bot = lightbulb.BotApp(token=f"{os.getenv('discord_token')}")
 miru.install(bot)
-# What happens if you create an embed and add fields with callback?
-# Maybe try returning input fields with just return not ctx.respond.
+
+field_names = ['Username', 'Feedback']
 class TestModal(miru.Modal):
     name = miru.TextInput(label="Username", placeholder="Your Username", required=True)
     feedBack = miru.TextInput(label="Feedback", placeholder="What do you think of the bot? Any improvements?", style=hikari.TextInputStyle.PARAGRAPH)
 
     async def callback(self, ctx: miru.ModalContext) -> None:
-        print(f"Name: {self.name.value}, feedback: {self.feedBack.value}, Input3: {self.input3.value}")
-        await ctx.respond(f"```You feedback has been recorded!```")
+        feedbackDict = {"Username": f"{self.name.value}", "Feedback": f"{self.feedBack.value}"}
+        with open('feedbackDB.csv', 'a') as csv_file:
+            dict_object = csv.DictWriter(csv_file, fieldnames=field_names, lineterminator='\n')
+            dict_object.writerow(feedbackDict)
+
+        await ctx.respond('Your feedback has been recorded! Thanks!')
 
 @bot.command
 @lightbulb.command('feedback', 'Produces modal for feedback')
