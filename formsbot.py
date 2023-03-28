@@ -8,8 +8,8 @@ import json
 
 load_dotenv()
 
-bot = lightbulb.BotApp(token=f"{os.getenv('discord_token')}")
-# bot = lightbulb.BotApp(token=os.environ['API_KEY'])
+# bot = lightbulb.BotApp(token=f"{os.getenv('discord_token')}")
+bot = lightbulb.BotApp(token=os.environ['API_KEY'])
 miru.install(bot)
 
 field_names = ['Username', 'Feedback']
